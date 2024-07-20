@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BalanceBuddy</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        header {
+            background-color: #333;
+            padding: 10px 0;
+        }
+        header nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        header nav a:hover {
+            text-decoration: underline;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            width: 84%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        select {
+            width: 60%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #000;
+        }
+        footer {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+        footer p {
+            margin: 0;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a onclick="showTab('home')">Home</a>
+                <a onclick="showTab('about')">About</a>
+                <a onclick="showTab('services')">Services</a>
+                <a id="planTab" style="display:none;" onclick="showTab('plans')">Plans</a>
+                <a onclick="showTab('login')">Login</a>
+                <a onclick="showTab('register')">Register</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="home" class="tab-content active">
+            <h2>Welcome to BalanceBuddy</h2>
+            <p>Your personal guide to a balanced and healthy lifestyle.</p>
+        </div>
+
+        <div id="about" class="tab-content">
+            <h2>About Us</h2>
+            <p>BalanceBuddy is dedicated to helping you achieve your fitness goals through personalized coaching and support. Our expert coaches are here to guide you on your journey to a healthier and happier life.</p>
+        </div>
+
+        <div id="services" class="tab-content">
+            <h2>Our Services</h2>
+            <p>Explore our range of services tailored to help you achieve your fitness and wellness goals.</p>
+        </div>
+
+        <div id="plans" class="tab-content">
+            <h2>Workout and Diet Plan</h2>
+            <form id="planForm">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" required><br><br>
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height" name="height" required><br><br>
+                <label for="diet">Dietary Preference:</label>
+                <select id="diet" name="diet">
+                    <option value="veg">Vegetarian</option>
+                    <option value="non-veg">Non-Vegetarian</option>
+                </select><br><br>
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select><br><br>
+                <input type="submit" value="Get Workout and Diet Plan">
+            </form>
+            <div id="output"></div>
+        </div>
+
+        <div id="login" class="tab-content">
+            <h2>Login to BalanceBuddy</h2>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" name="username" placeholder="Username" required><br>
+                <input type="password" id="loginPassword" name="password" placeholder="Password" required><br>
+                <input type="submit" value="Login">
+                <p id="loginMessage" class="error"></p>
+            </form>
+        </div>
+
+        <div id="register" class="tab-content">
+            <h2>Register with BalanceBuddy</h2>
+            <form id="registerForm">
+                <input type="text" id="registerUsername" name="username" placeholder="Username" required><br>
+                <input type="password" id="registerPassword" name="password" placeholder="Password" required><br>
+                <input type="email" id="registerEmail" name="email" placeholder="Email" required><br>
+                <input type="submit" value="Register">
+                <p id="registerMessage" class="success"></p>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 BalanceBuddy. All rights reserved.</p>
+    </footer>
+
+    <script>
+    function showTab(tabId) {
+        var tabs = document.getElementsByClassName('tab-content');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var username = document.getElementById('loginUsername').value;
+        var password = document.getElementById('loginPassword').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'login.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.responseText === 'Login successful!') {
+                document.getElementById('loginMessage').classList.remove('error');
+                document.getElementById('loginMessage').classList.add('success');
+                document.getElementById('loginMessage').textContent = xhr.responseText;
+                document.getElementById('planTab').style.display = 'inline';
+                showTab('plans');
+            } else {
+                document.getElementById('loginMessage').classList.remove('success');
+                document.getElementById('loginMessage').classList.add('error');
+                document.getElementById('loginMessage').textContent = xhr.responseText;
+            }
+        };
+        xhr.send('username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password));
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var username = document.getElementById('registerUsername').value;
+        var password = document.getElementById('registerPassword').value;
+        var email = document.getElementById('registerEmail').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'register.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            document.getElementById('registerMessage').textContent = xhr.responseText;
+        };
+        xhr.send('username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password) + '&email=' + encodeURIComponent(email));
+    });
+
+    document.getElementById('planForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var weight = document.getElementById('weight').value;
+        var height = document.getElementById('height').value;
+        var diet = document.getElementById('diet').value;
+        var gender = document.getElementById('gender').value;
+
+        var bmi = (weight / ((height / 100) ** 2)).toFixed(2);
+        var workoutPlan, dietPlan;
+
+        if (bmi < 18.5) {
+            workoutPlan = 'Focus on strength training exercises to build muscle mass. Incorporate compound movements like squats, deadlifts, and bench presses.';
+            dietPlan = 'Increase calorie intake with nutrient-dense foods. Include plenty of protein, healthy fats, and complex carbohydrates. Eat more frequently throughout the day.';
+        } else if (bmi >= 18.5 && bmi < 25) {
+            workoutPlan = 'Maintain a balanced workout routine with a mix of cardio and strength training. Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity each week.';
+            dietPlan = 'Maintain a balanced diet with plenty of fruits, vegetables, whole grains, and lean proteins. Limit processed foods and sugary drinks.';
+        } else if (bmi >= 25 && bmi < 30) {
+            workoutPlan = 'Incorporate high-intensity cardio exercises and strength training to lose weight. Focus on exercises that target multiple muscle groups at once.';
+            dietPlan = 'Reduce calorie intake to support weight loss. Focus on whole, unprocessed foods like vegetables, fruits, lean proteins, and whole grains. Limit sugary drinks and fast food.';
+        } else {
+            workoutPlan = 'Focus on low-impact cardio exercises to minimize joint stress. Include activities like swimming, cycling, and walking. Gradually incorporate strength training.';
+            dietPlan = 'Adopt a very low-calorie diet under professional supervision. Emphasize vegetables, lean proteins, and healthy fats. Avoid processed foods, sugary snacks, and high-calorie beverages.';
+        }
+
+        if (height > 180 && weight < 75) {
+            workoutPlan += ' Due to your height and lower weight, focus on posture improvement and core strengthening exercises.';
+            dietPlan += ' Ensure you are consuming enough calories to support your height and activity level.';
+        } else if (height < 160 && weight > 70) {
+            workoutPlan += ' Focus on exercises that are easy on the joints, like swimming and cycling. Include flexibility exercises like yoga.';
+            dietPlan += ' Pay special attention to portion sizes and avoid high-calorie snacks.';
+        }
+
+        var outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = `
+            <h3>Your Workout and Diet Plan</h3>
+            <p>Your BMI is: ${bmi}</p>
+            <p><strong>Dietary Preference:</strong> ${diet}</p>
+            <p><strong>Gender:</strong> ${gender}</p>
+            <h4>Workout Plan:</h4>
+            <p>${workoutPlan}</p>
+            <h4>Diet Plan:</h4>
+            <p>${dietPlan}</p>
+        `;
+    });
+</script>
+
+</body>
+</html>
+
+           
